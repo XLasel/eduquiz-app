@@ -16,7 +16,10 @@ type GLTFResult = GLTF & {
   };
 };
 
-export const PuzzlePiece3D = ({ ...props }: JSX.IntrinsicElements['group']) => {
+export const PuzzlePiece3D = ({
+  isMobile,
+  ...props
+}: JSX.IntrinsicElements['group'] & { isMobile: boolean }) => {
   const { nodes, materials } = useGLTF('puzzle-model/model.gltf') as GLTFResult;
   const normalMap = materials.material_puzzle.normalMap;
   const meshRef = useRef<THREE.Mesh>(null);
@@ -29,21 +32,30 @@ export const PuzzlePiece3D = ({ ...props }: JSX.IntrinsicElements['group']) => {
     }
   });
 
-  const materialProps = {
-    thickness: 0.15,
-    roughness: 0.1,
-    transmission: 0.8,
-    ior: 1.2,
-    chromaticAberration: 0.66,
-    backside: true,
-  };
+  const materialProps = isMobile
+    ? {
+        thickness: 0.1,
+        roughness: 0.2,
+        transmission: 0.5,
+        ior: 1.1,
+        chromaticAberration: 0,
+        backside: true,
+      }
+    : {
+        thickness: 0.15,
+        roughness: 0.1,
+        transmission: 0.8,
+        ior: 1.2,
+        chromaticAberration: 0.66,
+        backside: true,
+      };
 
   return (
     <group {...props} dispose={null}>
       <mesh
         ref={meshRef}
-        castShadow
-        receiveShadow
+        castShadow={!isMobile}
+        receiveShadow={!isMobile}
         geometry={nodes.puzzle.geometry}
         scale={[0.7, 0.7, 0.7]}
         onPointerOver={() => {
