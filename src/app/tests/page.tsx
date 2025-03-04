@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectIsAdmin } from '@/redux/selectors/authSelectors';
 import {
+  selectIsEmptyTestList,
   selectIsTestStateLoading,
   selectTests,
   selectTestStateError,
@@ -41,8 +42,9 @@ const TestsPage = () => {
   const { updateQueryParams } = useQueryParams();
   const searchParams = useParsedSearchParams();
   const isAdmin = useAppSelector(selectIsAdmin);
-  const { key, pagination, isStale } = useAppSelector(selectTests);
+  const { key, pagination, isStale, list } = useAppSelector(selectTests);
   const isLoading = useAppSelector(selectIsTestStateLoading);
+  const isEmptyTestList = useAppSelector(selectIsEmptyTestList);
   const error = useAppSelector(selectTestStateError);
   const [retryCount, setRetryCount] = useState(0);
 
@@ -54,6 +56,11 @@ const TestsPage = () => {
   } = searchParams;
 
   const [searchTerm, setSearchTerm] = useState(search);
+
+  const isEmptyServerTestList =
+    isEmptyTestList &&
+    search === DEFAULT_PARAMS.search &&
+    sort === DEFAULT_PARAMS.sort;
 
   const currentPage = useMemo(() => {
     if (page && pagination.total_pages && page > pagination.total_pages) {
@@ -195,6 +202,11 @@ const TestsPage = () => {
       ) : (
         <>
           <ListTest
+            list={list}
+            isLoading={isLoading}
+            isEmptyTestList={isEmptyTestList}
+            isEmptyServerTestList={isEmptyServerTestList}
+            isAdmin={isAdmin}
             itemsPerPage={per}
             sortBy={sort}
             handleSortChange={handleSortChange}

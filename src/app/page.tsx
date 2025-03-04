@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -10,10 +11,18 @@ import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 import { BasePageContainer } from '@/components/common';
-import { Hero3DScene } from '@/components/common/Hero3DScene';
 import { buttonVariants } from '@/components/shadcnUi/button';
 
 import { APP_ROUTES } from '@/constants';
+import { useDeviceInfo } from '@/hooks';
+
+const Hero3DScene = dynamic(
+  () =>
+    import('@/components/common/Hero3DScene').then((mod) => mod.Hero3DScene),
+  {
+    ssr: false,
+  }
+);
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -67,7 +76,7 @@ const heroSceneVariants = {
 
 const Home = () => {
   const [isContentLoaded, setIsContentLoaded] = useState(false);
-
+  const { isMobile } = useDeviceInfo();
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsContentLoaded(true);
@@ -93,13 +102,17 @@ const Home = () => {
               initial="hidden"
               animate="visible"
             >
-              <Hero3DScene />
+              <Hero3DScene isMobile={isMobile} />
             </motion.div>
           )}
         </AnimatePresence>
 
+        {isMobile && (
+          <div className="pointer-events-auto fixed left-0 top-[var(--header-height)] z-10 h-full max-h-[var(--content-height)] w-2/3" />
+        )}
+
         <section className="pointer-events-none grid flex-1 place-items-center">
-          <BasePageContainer className="z-10 my-auto px-4 py-4 md:py-6">
+          <BasePageContainer className="my-auto px-4 py-4 md:py-6">
             <motion.div
               className="relative space-y-6"
               variants={containerVariants}
@@ -110,10 +123,10 @@ const Home = () => {
                 className="relative max-w-[700px]"
                 variants={titleContainerVariants}
               >
-                <h1 className="relative z-10 text-4xl font-extrabold tracking-tight sm:text-7xl lg:text-[80px]/none">
+                <h1 className="relative text-4xl font-extrabold tracking-tight sm:text-7xl lg:text-[80px]/none">
                   Открывайте новые горизонты знаний вместе с&nbsp;нами
                 </h1>
-                <p className="relative z-10 mt-4 text-xl text-zinc-800 dark:text-zinc-200 sm:text-2xl">
+                <p className="relative mt-4 text-xl text-zinc-800 dark:text-zinc-200 sm:text-2xl">
                   Проходите увлекательные тесты и делитесь знаниями
                   в&nbsp;дружественной атмосфере
                 </p>
@@ -122,8 +135,8 @@ const Home = () => {
               <motion.div variants={buttonAnimation}>
                 <div className="inline-block">
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     style={{ transformOrigin: 'center' }}
                   >
                     <Link

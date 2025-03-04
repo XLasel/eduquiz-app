@@ -45,7 +45,7 @@ const Loading = () => {
         {blobData.map((data, i) => (
           <div
             key={i}
-            className={`animate-blob absolute rounded-full opacity-70 mix-blend-multiply blur-2xl filter dark:mix-blend-screen dark:blur-3xl ${data.colorClass}`}
+            className={`animate-blob absolute rounded-full opacity-70 mix-blend-multiply blur-3xl filter dark:mix-blend-screen ${data.colorClass}`}
             style={{
               width: data.width,
               height: data.height,

@@ -6,14 +6,6 @@ import Link from 'next/link';
 
 import { ChevronDown, ChevronUp, Edit, Trash2 } from 'lucide-react';
 
-import { useAppSelector } from '@/redux/hooks';
-import { selectIsAdmin } from '@/redux/selectors/authSelectors';
-import {
-  selectIsEmptyTestList,
-  selectIsTestStateLoading,
-  selectTests,
-} from '@/redux/selectors/testSelectors';
-
 import { Test } from '@/schemas/test';
 
 import { ConfirmationDialog } from '@/components/common';
@@ -31,6 +23,11 @@ import {
 import { APP_ROUTES } from '@/constants';
 
 interface ListTestProps {
+  list: Test[];
+  isLoading: boolean;
+  isEmptyTestList: boolean;
+  isEmptyServerTestList: boolean;
+  isAdmin: boolean;
   itemsPerPage: number;
   sortBy: string;
   handleSortChange: () => void;
@@ -39,18 +36,17 @@ interface ListTestProps {
 }
 
 export const ListTest = ({
+  list,
+  isLoading,
+  isEmptyTestList,
+  isEmptyServerTestList,
+  isAdmin,
   itemsPerPage,
   sortBy,
   handleSortChange,
   deleteTest,
   startTest,
 }: ListTestProps) => {
-  const { list } = useAppSelector(selectTests);
-  const isAdmin = useAppSelector(selectIsAdmin);
-  const isLoading = useAppSelector(selectIsTestStateLoading);
-
-  const isEmptyTestList = useAppSelector(selectIsEmptyTestList);
-
   const [isStartTestModalOpen, setIsStartTestModalOpen] = useState(false);
   const [isDeleteTestModalOpen, setIsDeleteTestModalOpen] = useState(false);
   const [selectedTest, setSelectedTest] = useState<Test | null>(null);
@@ -106,11 +102,13 @@ export const ListTest = ({
           ) : isEmptyTestList ? (
             <TableRow className="h-14">
               <TableCell colSpan={isAdmin ? 3 : 2}>
-                Нет доступных тестов.
+                {isEmptyServerTestList
+                  ? 'Тесты в пути! Загляните чуть позже.'
+                  : 'По вашему запросу ничего не найдено.'}
               </TableCell>
             </TableRow>
           ) : (
-            list.map((test: Test) => (
+            list.map((test) => (
               <TableRow
                 key={test.id}
                 onClick={() => handleStartTest(test)}
