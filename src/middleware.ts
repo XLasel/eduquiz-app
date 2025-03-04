@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { APP_ROUTES, SESSION_COOKIE_NAME } from './constants';
 
 const authRoutes = [APP_ROUTES.AUTH.LOGIN, APP_ROUTES.AUTH.REGISTER];
@@ -12,7 +11,6 @@ export function isRouteMatcher(
   allowedRoutes: PathMatcher[]
 ): boolean {
   const currentPath = req.nextUrl.pathname;
-
   return allowedRoutes.some((route) =>
     typeof route === 'string' ? currentPath === route : route.test(currentPath)
   );
@@ -20,14 +18,22 @@ export function isRouteMatcher(
 
 export default function middleware(req: NextRequest) {
   const auth = req.cookies.get(SESSION_COOKIE_NAME)?.value;
+  const url = req.nextUrl;
+  const currentPath = url.pathname + url.search;
+  const callbackUrl = url.searchParams.get('callbackUrl');
+
+  const finalCallbackUrl = callbackUrl || currentPath;
 
   if (auth && isRouteMatcher(req, authRoutes)) {
-    return NextResponse.redirect(new URL(APP_ROUTES.HOME, req.url));
+    return NextResponse.redirect(
+      new URL(finalCallbackUrl || APP_ROUTES.HOME, req.url)
+    );
   }
 
   if (!auth && isRouteMatcher(req, protectedRoutes)) {
     const loginUrl = new URL(APP_ROUTES.AUTH.LOGIN, req.nextUrl.origin);
-    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
+
+    loginUrl.searchParams.set('callbackUrl', finalCallbackUrl);
     return NextResponse.redirect(loginUrl);
   }
 
