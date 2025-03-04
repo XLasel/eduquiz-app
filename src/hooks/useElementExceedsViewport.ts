@@ -8,20 +8,25 @@ export const useElementExceedsViewport = (
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   useEffect(() => {
-    const checkElementOverflow = () => {
-      if (ref?.current) {
-        const rect = ref.current.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        setIsOverflowing(rect.height > viewportHeight);
-      }
+    const element = ref?.current;
+    if (!element) return;
+
+    const checkOverflow = () => {
+      const rect = element.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      setIsOverflowing(rect.height > viewportHeight);
     };
 
-    checkElementOverflow();
+    checkOverflow();
 
-    window.addEventListener('resize', checkElementOverflow);
+    const resizeObserver = new ResizeObserver(checkOverflow);
+    resizeObserver.observe(element);
+
+    window.addEventListener('resize', checkOverflow);
 
     return () => {
-      window.removeEventListener('resize', checkElementOverflow);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', checkOverflow);
     };
   }, [ref]);
 

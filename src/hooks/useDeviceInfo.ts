@@ -30,9 +30,9 @@ export const useDeviceInfo = (): DeviceInfo => {
     device: 'desktop',
     isMobile: false,
     isTablet: false,
-    isDesktop: true, // Default for SSR environments
+    isDesktop: true,
     isHd: false,
-    isWideScreen: true, // Default for SSR
+    isWideScreen: true,
   });
 
   useEffect(() => {

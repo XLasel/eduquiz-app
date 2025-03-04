@@ -1,5 +1,7 @@
 'use client';
 
+import { use } from 'react';
+
 import {
   startTestDeletion,
   startTestUpdate,
@@ -7,8 +9,8 @@ import {
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   selectCurrentTest,
-  selectIsNotEmptyCurrentTest,
-  selectIsTestsSkeletonVisible,
+  selectIsCurrentTestSubmitting,
+  selectShowCurrentTestSkeleton,
 } from '@/redux/selectors/testSelectors';
 
 import { TestFormValue } from '@/schemas/test';
@@ -21,12 +23,13 @@ import { useHandleTestStatus } from '@/hooks';
 import { SkeletonTestDesignerForm, TestDesignerForm } from '../../_components';
 import Loading from '../../loading';
 
-const EditTest = () => {
+const EditTest = ({ params }: { params: Promise<{ testId: string }> }) => {
   const dispatch = useAppDispatch();
+  const { testId } = use(params);
 
   const test = useAppSelector(selectCurrentTest);
-  const isTestSkeletonVisible = useAppSelector(selectIsTestsSkeletonVisible);
-  const isNotEmptyCurrentTest = useAppSelector(selectIsNotEmptyCurrentTest);
+  const showSkeleton = useAppSelector(selectShowCurrentTestSkeleton);
+  const isSubmitting = useAppSelector(selectIsCurrentTestSubmitting);
 
   useHandleTestStatus({
     entity: TEST_ENTITY.TEST,
@@ -39,23 +42,20 @@ const EditTest = () => {
     dispatch(startTestUpdate({ updatedTest: testData, originalTest: test }));
   };
 
-  const onDelete = () => {
-    if (!test) return;
-    dispatch(startTestDeletion(test.id));
+  const onDelete = (testId: number) => {
+    dispatch(startTestDeletion(testId));
   };
 
-  return (
-    <>
-      {isTestSkeletonVisible && <SkeletonTestDesignerForm />}
-      {isNotEmptyCurrentTest && (
-        <TestDesignerForm
-          initialData={test!}
-          onSave={onSave}
-          onDelete={onDelete}
-        />
-      )}
-    </>
-  );
+  return showSkeleton || Number(testId) !== test?.id ? (
+    <SkeletonTestDesignerForm />
+  ) : test ? (
+    <TestDesignerForm
+      initialData={test}
+      onSave={onSave}
+      onDelete={() => onDelete(test.id)}
+      isSubmitting={isSubmitting}
+    />
+  ) : null;
 };
 
 export default IsAdmin(EditTest, {

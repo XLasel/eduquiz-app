@@ -22,11 +22,13 @@ export const QuestionListItem = ({
   index,
   onEdit,
   onDelete,
+  disabled = false,
 }: {
   question: QuestionFormValue & { id: string };
   index: number;
   onEdit: () => void;
   onDelete: () => void;
+  disabled: boolean;
 }) => {
   const { title, question_type, answers, answer } = question;
   const type = useMemo(
@@ -66,10 +68,20 @@ export const QuestionListItem = ({
           )}
         </div>
         <div className="flex flex-shrink-0">
-          <Button variant="ghost" size="icon" onClick={onEdit}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onEdit}
+            disabled={disabled}
+          >
             <Edit className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={onDelete}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onDelete}
+            disabled={disabled}
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>

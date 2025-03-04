@@ -48,7 +48,10 @@ export const QuestionForm = ({
   onCancel,
 }: QuestionFormProps) => {
   const methods = useForm<QuestionFormValue>({
-    defaultValues: initialQuestion,
+    defaultValues: {
+      ...initialQuestion,
+      question_type: initialQuestion.question_type || typesField[0].value,
+    },
     resolver: zodResolver(questionFormSchema),
   });
 
@@ -68,9 +71,16 @@ export const QuestionForm = ({
 
   const watchQuestionType = watch('question_type');
 
-  useEffect(() => reset(initialQuestion), [initialQuestion, reset]);
+  useEffect(() => {
+    reset({
+      ...initialQuestion,
+      question_type: initialQuestion.question_type || typesField[0].value,
+    });
+  }, [initialQuestion, reset]);
 
-  useEffect(() => clearErrors(), [watchQuestionType, clearErrors]);
+  useEffect(() => {
+    clearErrors();
+  }, [watchQuestionType, clearErrors]);
 
   const handleSave = (data: QuestionFormValue) => {
     const answers = data.question_type !== 'number' ? data.answers : [];
@@ -103,9 +113,11 @@ export const QuestionForm = ({
                 <FormLabel>Тип вопроса</FormLabel>
                 <Select
                   onValueChange={(value) => {
-                    field.onChange(value);
+                    if (value) {
+                      field.onChange(value);
+                    }
                   }}
-                  defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>

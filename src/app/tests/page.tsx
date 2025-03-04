@@ -25,7 +25,7 @@ import { ItemsPerPageButton, Pagination, Search } from '@/components/common';
 import { RequireAuth } from '@/components/logic';
 import { Button, buttonVariants } from '@/components/shadcnUi/button';
 
-import { APP_ROUTES, DEFAULT_PARAMS } from '@/constants';
+import { APP_ROUTES, DEFAULT_PARAMS, MAX_RETRY_COUNT } from '@/constants';
 import {
   useDebouncedCallback,
   useParsedSearchParams,
@@ -34,8 +34,6 @@ import {
 
 import { ListTest } from './ListTest';
 import Loading from './loading';
-
-const MAX_RETRY_COUNT = 3;
 
 const TestsPage = () => {
   const router = useRouter();
@@ -130,7 +128,7 @@ const TestsPage = () => {
   }, [updateTestList]);
 
   useEffect(() => {
-    if (!isStale) {
+    if (isStale !== false) {
       dispatch(startTestListFetch(searchParams));
     }
   }, [isStale, searchParams, dispatch]);

@@ -10,7 +10,7 @@ import { useAppSelector } from '@/redux/hooks';
 import { selectIsAdmin } from '@/redux/selectors/authSelectors';
 import {
   selectIsEmptyTestList,
-  selectIsTestsSkeletonVisible,
+  selectIsTestStateLoading,
   selectTests,
 } from '@/redux/selectors/testSelectors';
 
@@ -47,7 +47,7 @@ export const ListTest = ({
 }: ListTestProps) => {
   const { list } = useAppSelector(selectTests);
   const isAdmin = useAppSelector(selectIsAdmin);
-  const isTestsSkeletonVisible = useAppSelector(selectIsTestsSkeletonVisible);
+  const isLoading = useAppSelector(selectIsTestStateLoading);
 
   const isEmptyTestList = useAppSelector(selectIsEmptyTestList);
 
@@ -95,7 +95,7 @@ export const ListTest = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isTestsSkeletonVisible ? (
+          {isLoading ? (
             [...Array(itemsPerPage)].map((_, i) => (
               <TableRow className="h-14" key={i}>
                 <TableCell colSpan={isAdmin ? 3 : 2}>

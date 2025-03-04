@@ -2,8 +2,6 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { getPanelElement } from 'react-resizable-panels';
-import useMeasure from 'react-use-measure';
 
 import { useRouter } from 'next/navigation';
 
@@ -46,6 +44,7 @@ interface TestDesignerProps {
   initialData?: Test;
   onSave: (data: TestFormValue) => void;
   onDelete?: () => void;
+  isSubmitting: boolean;
 }
 
 const scrollToTop = () => {
@@ -56,6 +55,7 @@ export const TestDesignerForm = ({
   initialData,
   onSave,
   onDelete,
+  isSubmitting = false,
 }: TestDesignerProps) => {
   const methods = useForm<TestFormValue>({
     defaultValues: {
@@ -89,7 +89,6 @@ export const TestDesignerForm = ({
   const [isDeleteTestModalOpen, setIsDeleteTestModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const isOverflowing = useElementExceedsViewport(containerRef);
-  const [refPanel, { width }] = useMeasure();
 
   const { toast } = useToast();
 
@@ -123,11 +122,6 @@ export const TestDesignerForm = ({
       });
     }
   }, [errors, toast]);
-
-  useEffect(() => {
-    const panel = getPanelElement('question-form');
-    refPanel(panel);
-  }, [width, refPanel]);
 
   const handleDeleteTest = () => {
     setIsDeleteTestModalOpen(true);
@@ -195,15 +189,20 @@ export const TestDesignerForm = ({
                 </h1>
                 <div className="flex flex-1 justify-end gap-2 self-end sm:flex-initial">
                   <ResetButton
-                    isDirty={isDirty}
+                    disabled={isSubmitting || !isDirty}
                     onClick={() => reset(initialData)}
                   />
-                  {initialData && <DeleteButton onClick={handleDeleteTest} />}
+                  {initialData && (
+                    <DeleteButton
+                      onClick={handleDeleteTest}
+                      disabled={isSubmitting}
+                    />
+                  )}
                   <SaveButton
-                    isDirty={true}
                     formId="form"
                     label="adaptive"
                     className="w-full md:w-auto"
+                    disabled={isSubmitting || !isDirty}
                   />
                 </div>
               </div>
@@ -217,6 +216,7 @@ export const TestDesignerForm = ({
                         className="text-xl font-semibold"
                         placeholder="Название теста"
                         {...field}
+                        disabled={isSubmitting}
                       />
                     </FormControl>
                   </FormItem>
@@ -226,7 +226,12 @@ export const TestDesignerForm = ({
           </Form>
 
           <div className="flex flex-1 flex-col gap-5 overflow-auto">
-            <Button onClick={handleAddQuestion} size="lg" className="w-full">
+            <Button
+              onClick={handleAddQuestion}
+              size="lg"
+              className="w-full"
+              disabled={isSubmitting}
+            >
               <Plus className="mr-2 h-4 w-4" /> Добавить Вопрос
             </Button>
             <div ref={containerRef}>
@@ -239,6 +244,7 @@ export const TestDesignerForm = ({
                       index={index}
                       onEdit={() => handleEditQuestion(index)}
                       onDelete={() => handleDeleteQuestion(index)}
+                      disabled={isSubmitting}
                     />
                   ))}
                 </ul>
@@ -269,7 +275,10 @@ export const TestDesignerForm = ({
               <div className="w-full">
                 <div className="mb-6 flex items-center justify-between">
                   <h2 className="text-2xl font-bold">
-                    {editingQuestionIndex ? 'Редактировать' : 'Добавить'} вопрос
+                    {editingQuestionIndex !== null
+                      ? 'Редактировать'
+                      : 'Добавить'}{' '}
+                    вопрос
                   </h2>
                   <Button
                     variant="ghost"
