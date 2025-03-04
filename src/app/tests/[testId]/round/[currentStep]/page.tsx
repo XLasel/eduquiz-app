@@ -8,8 +8,8 @@ import { usePreviousRoutes } from '@/providers/RouteHistoryProvider';
 import { useAppSelector } from '@/redux/hooks';
 import {
   selectCurrentTest,
-  selectIsNotEmptyCurrentTest,
-  selectIsTestsSkeletonVisible,
+  selectShowCurrentTestSkeleton,
+  selectShowTestForm,
 } from '@/redux/selectors/testSelectors';
 
 import { Progress } from '@/components/shadcnUi/progress';
@@ -30,13 +30,15 @@ const StepPage = ({
   const { findRoute } = usePreviousRoutes();
 
   const test = useAppSelector(selectCurrentTest);
-  const isTestsSkeletonVisible = useAppSelector(selectIsTestsSkeletonVisible);
-  const isNotEmptyCurrentTest = useAppSelector(selectIsNotEmptyCurrentTest);
   const score = useAppSelector((state) => state.testSession.score);
+  const { currentStep, testId } = use(params);
 
   const [showResults, setShowResults] = useState(false);
 
-  const { currentStep } = use(params);
+  const showSkeleton = useAppSelector(selectShowCurrentTestSkeleton);
+  const showForm = useAppSelector(selectShowTestForm);
+  const isTestsSkeletonVisible = showSkeleton || test?.id !== Number(testId);
+  const isShowForm = showForm && !isTestsSkeletonVisible;
 
   const lastTestsRoute =
     findRoute(TESTS_LIST_ROUTE_PATTERN) || APP_ROUTES.TESTS.LIST;
@@ -54,11 +56,9 @@ const StepPage = ({
 
       <div className="flex flex-col gap-4 md:gap-5">
         {isTestsSkeletonVisible && <Skeleton className="h-9 w-1/2" />}
-        {isNotEmptyCurrentTest && (
-          <h1 className="text-3xl font-bold">{test!.title}</h1>
-        )}
+        {isShowForm && <h1 className="text-3xl font-bold">{test!.title}</h1>}
         {isTestsSkeletonVisible && <SkeletonStepForm />}
-        {isNotEmptyCurrentTest && (
+        {isShowForm && (
           <StepForm
             test={test!}
             currentStep={Number(currentStep)}

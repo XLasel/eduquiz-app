@@ -29,8 +29,10 @@ const Error = ({ error, reset }: { error: Error; reset: () => void }) => {
           <h2 className="text-center text-3xl font-semibold">
             Что-то пошло не так!
           </h2>
-          <div className="i flex max-w-xl flex-col justify-center gap-4">
-            <p className="text-lg text-muted-foreground">{error?.message}</p>
+          <div className="flex max-w-xl flex-col items-center justify-center gap-4">
+            <p className="text-center text-lg text-muted-foreground">
+              {error?.message}
+            </p>
             <Button
               variant="brand"
               size="lg"

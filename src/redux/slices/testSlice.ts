@@ -108,11 +108,11 @@ const testSlice = createSlice({
       };
     },
     markTestsListStale: (state) => {
-      state.tests.isStale = false;
+      state.tests.isStale = true;
     },
     markTestStale: (state, action: PayloadAction<number>) => {
       if (state.currentTest.test?.id === action.payload) {
-        state.currentTest.isStale = false;
+        state.currentTest.isStale = true;
       }
     },
     completeTestListFetch: (
@@ -125,18 +125,18 @@ const testSlice = createSlice({
       state.tests.list = action.payload.data.tests;
       state.tests.pagination = action.payload.data.meta;
       state.tests.key = action.payload.key;
-      state.tests.isStale = true;
+      state.tests.isStale = false;
     },
     completeTestFetch: (
       state,
       action: PayloadAction<CompleteTestFetchData>
     ) => {
       state.currentTest.test = action.payload;
-      state.currentTest.isStale = true;
+      state.currentTest.isStale = false;
     },
     completeTestUpdate: (state) => {
-      state.currentTest.isStale = false;
-      state.tests.isStale = false;
+      state.currentTest.isStale = true;
+      state.tests.isStale = true;
     },
     completeTestDeletion: (
       state,

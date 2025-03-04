@@ -1,5 +1,7 @@
 import { QuestionType } from '@/schemas/test';
 
+export const MAX_RETRY_COUNT = 3;
+
 export const APP_ROUTES = {
   HOME: '/',
   AUTH: {

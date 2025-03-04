@@ -2,40 +2,21 @@ import { RotateCcw, Save, Trash2 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
-import { Button } from '@/components/shadcnUi/button';
+import { Button, ButtonProps } from '@/components/shadcnUi/button';
 
-interface ActionButtonProps {
-  onClick: () => void;
-  className?: string;
-}
-
-interface ToggleableActionButtonProps extends ActionButtonProps {
-  isDirty: boolean;
-}
-
-export const DeleteButton = ({ onClick, className }: ActionButtonProps) => (
-  <Button
-    type="button"
-    variant="destructive"
-    onClick={onClick}
-    className={className}
-  >
+export const DeleteButton = ({ ...props }: ButtonProps) => (
+  <Button type="button" variant="destructive" {...props}>
     <Trash2 className="h-4 w-4" />
     <span className="sr-only">Удалить</span>
   </Button>
 );
 
-export const ResetButton = ({
-  isDirty,
-  onClick,
-  className,
-}: ToggleableActionButtonProps) => (
+export const ResetButton = ({ className, ...props }: ButtonProps) => (
   <Button
     type="button"
     variant="outline"
-    disabled={!isDirty}
-    onClick={onClick}
     className={cn('space-x-3', className)}
+    {...props}
   >
     <RotateCcw className="h-4 w-4" />
     <span className="sr-only">Сбросить</span>
@@ -43,21 +24,20 @@ export const ResetButton = ({
 );
 
 export const SaveButton = ({
-  isDirty,
   formId,
   label = true,
   className,
+  ...props
 }: {
-  isDirty: boolean;
   formId?: string;
   label?: 'adaptive' | boolean;
   className?: string;
-}) => (
+} & ButtonProps) => (
   <Button
     form={formId}
     type="submit"
-    disabled={!isDirty}
     className={cn('flex items-center gap-2', className)}
+    {...props}
   >
     <Save className="h-4 w-4" />
     <span
