@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { APP_ROUTES, SESSION_COOKIE_NAME } from './constants';
+import { cookies } from 'next/headers';
 
 const authRoutes = [APP_ROUTES.AUTH.LOGIN, APP_ROUTES.AUTH.REGISTER];
 const protectedRoutes = [/^\/tests(\/.*)?$/];
@@ -22,8 +23,8 @@ function getSafeCallbackUrl(url: URL): string | null {
   return callbackUrl && callbackUrl.startsWith('/') ? callbackUrl : null;
 }
 
-export default function middleware(req: NextRequest) {
-  const auth = req.cookies.get(SESSION_COOKIE_NAME)?.value;
+export default async function middleware(req: NextRequest) {
+  const auth = await (await cookies()).get(SESSION_COOKIE_NAME)?.value;
   const url = req.nextUrl;
   const currentPath = url.pathname + url.search;
   const callbackUrl = getSafeCallbackUrl(url);
@@ -48,3 +49,9 @@ export default function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|icons/.*|images/.*|puzzle-model/.*).*)',
+  ],
+};

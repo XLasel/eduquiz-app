@@ -58,6 +58,7 @@ export const useHandleAuthStatus = ({
 
       if (redirectUrl) {
         router.push(redirectUrl);
+        router.refresh();
       }
     }
   }, [
