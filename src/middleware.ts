@@ -7,7 +7,7 @@ const protectedRoutes = [/^\/tests(\/.*)?$/];
 
 type PathMatcher = string | RegExp;
 
-export function isRouteMatcher(
+function isRouteMatcher(
   req: NextRequest,
   allowedRoutes: PathMatcher[]
 ): boolean {
@@ -17,30 +17,34 @@ export function isRouteMatcher(
   );
 }
 
+function getSafeCallbackUrl(url: URL): string | null {
+  const callbackUrl = url.searchParams.get('callbackUrl');
+  return callbackUrl && callbackUrl.startsWith('/') ? callbackUrl : null;
+}
+
 export default function middleware(req: NextRequest) {
   const auth = req.cookies.get(SESSION_COOKIE_NAME)?.value;
   const url = req.nextUrl;
   const currentPath = url.pathname + url.search;
-  const callbackUrl = url.searchParams.get('callbackUrl');
-
+  const callbackUrl = getSafeCallbackUrl(url);
   const finalCallbackUrl = callbackUrl || currentPath;
 
+  const isCallbackAuthRoute = (authRoutes as string[]).includes(
+    finalCallbackUrl
+  );
+
   if (auth && isRouteMatcher(req, authRoutes)) {
-    return NextResponse.redirect(
-      new URL(finalCallbackUrl || APP_ROUTES.HOME, req.url)
-    );
+    const redirectTo = !isCallbackAuthRoute
+      ? finalCallbackUrl
+      : APP_ROUTES.HOME;
+    return NextResponse.redirect(new URL(redirectTo, req.url));
   }
 
   if (!auth && isRouteMatcher(req, protectedRoutes)) {
     const loginUrl = new URL(APP_ROUTES.AUTH.LOGIN, req.nextUrl.origin);
-
     loginUrl.searchParams.set('callbackUrl', finalCallbackUrl);
     return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-};
