@@ -9,9 +9,15 @@
   --background-end-rgb: 255, 255, 255;
 
   --header-height: 80px;
-  --footer-height: 133px;
+  --footer-height: 170px;
 
   --content-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+@media (min-width: 314px) {
+  :root {
+    --footer-height: 133px;
+  }
 }
 
 @media (min-width: 768px) {
