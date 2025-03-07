@@ -78,7 +78,7 @@ export const AppHeader = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50 h-[var(--header-height)] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 h-[var(--header-height)] w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-full items-center justify-between gap-5 p-4">
         <Logo />
         {!isMobile && renderDesktopNav()}

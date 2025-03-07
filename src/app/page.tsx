@@ -86,79 +86,77 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="flex-1">
-      <div className="relative flex min-h-[var(--content-height)] w-full flex-col bg-background">
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 top-0 m-auto h-[80%] w-[80%] rounded-full bg-gradient-radial from-indigo-600 via-yellow-500/50 to-transparent blur-[50px] dark:from-pink-500 dark:via-purple-500/70 dark:to-transparent"
-          variants={gradientVariants}
-          initial="hidden"
-          animate="visible"
-        />
-        <AnimatePresence>
-          {isContentLoaded && (
-            <motion.div
-              className="absolute inset-0 z-0 h-full"
-              variants={heroSceneVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <Hero3DScene isMobile={isMobile} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {isMobile && (
-          <div className="pointer-events-auto fixed left-0 top-[var(--header-height)] z-10 h-full max-h-[var(--content-height)] w-2/3" />
+    <div className="relative flex w-full grow flex-col bg-background">
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 top-0 m-auto h-[80%] w-[80%] rounded-full bg-gradient-radial from-indigo-600 via-yellow-500/50 to-transparent blur-[50px] dark:from-pink-500 dark:via-purple-500/70 dark:to-transparent"
+        variants={gradientVariants}
+        initial="hidden"
+        animate="visible"
+      />
+      <AnimatePresence>
+        {isContentLoaded && (
+          <motion.div
+            className="absolute inset-0 z-0 h-full"
+            variants={heroSceneVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <Hero3DScene isMobile={isMobile} />
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        <section className="pointer-events-none grid flex-1 place-items-center">
-          <BasePageContainer className="my-auto px-4 py-4 md:py-6">
+      {isMobile && (
+        <div className="pointer-events-auto fixed left-0 top-[var(--header-height)] z-10 h-80 w-2/3" />
+      )}
+
+      <section className="pointer-events-none grid flex-1 place-items-center">
+        <BasePageContainer className="my-auto px-4 py-4 md:py-6">
+          <motion.div
+            className="relative space-y-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <motion.div
-              className="relative space-y-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
+              className="relative max-w-[700px]"
+              variants={titleContainerVariants}
             >
-              <motion.div
-                className="relative max-w-[700px]"
-                variants={titleContainerVariants}
-              >
-                <h1 className="relative text-4xl font-extrabold tracking-tight sm:text-7xl lg:text-[80px]/none">
-                  Открывайте новые горизонты знаний вместе с&nbsp;нами
-                </h1>
-                <p className="relative mt-4 text-xl text-zinc-800 dark:text-zinc-200 sm:text-2xl">
-                  Проходите увлекательные тесты и делитесь знаниями
-                  в&nbsp;дружественной атмосфере
-                </p>
-              </motion.div>
-
-              <motion.div variants={buttonAnimation}>
-                <div className="inline-block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    style={{ transformOrigin: 'center' }}
-                  >
-                    <Link
-                      href={APP_ROUTES.TESTS.LIST}
-                      className={cn(
-                        buttonVariants({
-                          size: 'lg',
-                          variant: 'brand',
-                        }),
-                        'pointer-events-auto rounded-full text-lg'
-                      )}
-                    >
-                      К тестам <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </motion.div>
-                </div>
-              </motion.div>
+              <h1 className="relative text-4xl font-extrabold tracking-tight sm:text-7xl lg:text-[80px]/none">
+                Открывайте новые горизонты знаний вместе с&nbsp;нами
+              </h1>
+              <p className="relative mt-4 text-xl text-zinc-800 dark:text-zinc-200 sm:text-2xl">
+                Проходите увлекательные тесты и делитесь знаниями
+                в&nbsp;дружественной атмосфере
+              </p>
             </motion.div>
-          </BasePageContainer>
-        </section>
-      </div>
-    </main>
+
+            <motion.div variants={buttonAnimation}>
+              <div className="relative z-20 inline-block">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{ transformOrigin: 'center' }}
+                >
+                  <Link
+                    href={APP_ROUTES.TESTS.LIST}
+                    className={cn(
+                      buttonVariants({
+                        size: 'lg',
+                        variant: 'brand',
+                      }),
+                      'pointer-events-auto rounded-full text-lg'
+                    )}
+                  >
+                    К тестам <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </BasePageContainer>
+      </section>
+    </div>
   );
 };
 
