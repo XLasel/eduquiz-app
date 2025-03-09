@@ -1,7 +1,7 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { APP_ROUTES, SESSION_COOKIE_NAME } from './constants';
-import { cookies } from 'next/headers';
 
 const authRoutes = [APP_ROUTES.AUTH.LOGIN, APP_ROUTES.AUTH.REGISTER];
 const protectedRoutes = [/^\/tests(\/.*)?$/];

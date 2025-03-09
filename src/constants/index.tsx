@@ -1,3 +1,4 @@
+import { SortEnum } from '@/schemas/search';
 import { QuestionType } from '@/schemas/test';
 
 export const MAX_RETRY_COUNT = 3;
@@ -29,7 +30,12 @@ export const EMPTY_QUESTION = {
 };
 export const SESSION_COOKIE_NAME = '_session_id';
 
-export const DEFAULT_PARAMS = {
+export const DEFAULT_SEARCH_PARAMS: {
+  page: number;
+  per: number;
+  search: string;
+  sort: SortEnum;
+} = {
   page: 1,
   per: 5,
   search: '',

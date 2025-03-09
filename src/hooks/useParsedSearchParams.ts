@@ -6,6 +6,8 @@ import { useSearchParams } from 'next/navigation';
 
 import { searchParamsSchema } from '@/schemas/search';
 
+import { DEFAULT_SEARCH_PARAMS } from '@/constants';
+
 export const useParsedSearchParams = () => {
   const searchParams = useSearchParams();
 
@@ -14,13 +16,11 @@ export const useParsedSearchParams = () => {
     [searchParams]
   );
 
-  const parsedSearchParams = useMemo(() => {
+  return useMemo(() => {
     try {
       return searchParamsSchema.parse(searchParamsRecord);
     } catch {
-      return {};
+      return DEFAULT_SEARCH_PARAMS;
     }
   }, [searchParamsRecord]);
-
-  return parsedSearchParams;
 };

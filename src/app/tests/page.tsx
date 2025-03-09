@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,11 @@ import { ItemsPerPageButton, Pagination, Search } from '@/components/common';
 import { RequireAuth } from '@/components/logic';
 import { Button, buttonVariants } from '@/components/shadcnUi/button';
 
-import { APP_ROUTES, DEFAULT_PARAMS, MAX_RETRY_COUNT } from '@/constants';
+import {
+  APP_ROUTES,
+  DEFAULT_SEARCH_PARAMS,
+  MAX_RETRY_COUNT,
+} from '@/constants';
 import {
   useDebouncedCallback,
   useParsedSearchParams,
@@ -46,31 +50,16 @@ const TestsPage = () => {
   const isLoading = useAppSelector(selectIsTestStateLoading);
   const isEmptyTestList = useAppSelector(selectIsEmptyTestList);
   const error = useAppSelector(selectTestStateError);
-  const [retryCount, setRetryCount] = useState(0);
+  const retryCountRef = useRef(0);
 
-  const {
-    search = DEFAULT_PARAMS.search,
-    sort = DEFAULT_PARAMS.sort,
-    per = DEFAULT_PARAMS.per,
-    page = DEFAULT_PARAMS.page,
-  } = searchParams;
+  const { search, sort, per, page } = searchParams;
 
   const [searchTerm, setSearchTerm] = useState(search);
 
   const isEmptyServerTestList =
     isEmptyTestList &&
-    search === DEFAULT_PARAMS.search &&
-    sort === DEFAULT_PARAMS.sort;
-
-  const currentPage = useMemo(() => {
-    if (page && pagination.total_pages && page > pagination.total_pages) {
-      updateQueryParams({
-        paramsToAdd: { page: pagination.total_pages.toString() },
-      });
-      return pagination.total_pages;
-    }
-    return page;
-  }, [page, pagination.total_pages, updateQueryParams]);
+    search === DEFAULT_SEARCH_PARAMS.search &&
+    sort === DEFAULT_SEARCH_PARAMS.sort;
 
   const debouncedSearch = useDebouncedCallback(
     (query: string) => updateQueryParams({ paramsToAdd: { search: query } }),
@@ -89,9 +78,11 @@ const TestsPage = () => {
   };
 
   const handleSortChange = () => {
-    const newSortBy =
-      sort === 'created_at_desc' ? 'created_at_asc' : 'created_at_desc';
-    updateQueryParams({ paramsToAdd: { sort: newSortBy } });
+    updateQueryParams({
+      paramsToAdd: {
+        sort: sort === 'created_at_desc' ? 'created_at_asc' : 'created_at_desc',
+      },
+    });
   };
 
   const handlePaginationChange = (newPage: number) => {
@@ -103,32 +94,46 @@ const TestsPage = () => {
   };
 
   const handleRefresh = () => {
-    setRetryCount(0);
+    retryCountRef.current = 0;
     dispatch(markTestsListStale());
   };
 
-  const deleteTest = (id: number) => dispatch(startTestDeletion(id));
+  const deleteTest = useCallback(
+    (id: number) => dispatch(startTestDeletion(id)),
+    [dispatch]
+  );
 
-  const startTest = (id: number) => router.push(APP_ROUTES.TESTS.ROUND(id, 1));
+  const startTest = useCallback(
+    (id: number) => router.push(APP_ROUTES.TESTS.ROUND(id, 1)),
+    [router]
+  );
 
   const updateTestList = useCallback(() => {
     if (key && compareCacheKeys(key, generateCacheKey(searchParams))) return;
     dispatch(startTestListFetch(searchParams));
-  }, [searchParams, dispatch, key]);
+  }, [searchParams, key, dispatch]);
 
   useEffect(() => {
-    if (error && retryCount < MAX_RETRY_COUNT) {
-      const timer = setTimeout(
-        () => {
-          setRetryCount((prev) => prev + 1);
-          dispatch(startTestListFetch(searchParams));
-        },
-        1000 * Math.pow(2, retryCount)
-      );
-
-      return () => clearTimeout(timer);
+    if (page && pagination.total_pages && page > pagination.total_pages) {
+      updateQueryParams({
+        paramsToAdd: { page: pagination.total_pages.toString() },
+      });
     }
-  }, [error, retryCount, dispatch, searchParams]);
+  }, [page, pagination.total_pages, updateQueryParams]);
+
+  useEffect(() => {
+    if (!error || retryCountRef.current >= MAX_RETRY_COUNT) return;
+
+    const timer = setTimeout(
+      () => {
+        retryCountRef.current += 1;
+        dispatch(startTestListFetch(searchParams));
+      },
+      1000 * Math.pow(2, retryCountRef.current)
+    );
+
+    return () => clearTimeout(timer);
+  }, [error, searchParams, dispatch]);
 
   useEffect(() => {
     updateTestList();
@@ -220,7 +225,7 @@ const TestsPage = () => {
             />
             {pagination.total_pages > 1 && (
               <Pagination
-                currentPage={currentPage}
+                currentPage={page}
                 totalPages={pagination.total_pages}
                 onPageChange={handlePaginationChange}
               />

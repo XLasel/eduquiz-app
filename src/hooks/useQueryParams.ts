@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -13,11 +13,6 @@ export const useQueryParams = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const currentParams = useMemo(
-    () => new URLSearchParams(searchParams.toString()),
-    [searchParams]
-  );
-
   const updateQueryParams = useCallback(
     ({
       paramsToAdd = {},
@@ -28,10 +23,10 @@ export const useQueryParams = () => {
       paramsToRemove?: string[];
       replace?: boolean;
     } = {}) => {
-      const updatedParams = new URLSearchParams(currentParams.toString());
+      const updatedParams = new URLSearchParams(searchParams.toString());
 
       Object.entries(paramsToAdd).forEach(([key, value]) => {
-        if (value === undefined || value === '' || value === null) {
+        if (!value) {
           updatedParams.delete(key);
         } else if (Array.isArray(value)) {
           updatedParams.delete(key);
@@ -44,15 +39,13 @@ export const useQueryParams = () => {
       paramsToRemove.forEach((key) => updatedParams.delete(key));
 
       const newRoute = `${pathname}?${updatedParams.toString()}`;
-
-      if (replace) {
-        router.replace(newRoute);
-      } else {
-        router.push(newRoute, { scroll: false });
-      }
+      //eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      replace
+        ? router.replace(newRoute)
+        : router.push(newRoute, { scroll: false });
     },
-    [router, pathname, currentParams]
+    [router, pathname, searchParams]
   );
 
-  return { updateQueryParams, currentParams };
+  return { updateQueryParams };
 };
