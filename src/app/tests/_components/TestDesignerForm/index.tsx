@@ -213,7 +213,7 @@ export const TestDesignerForm = ({
                   <FormItem className="px-1">
                     <FormControl>
                       <Input
-                        className="text-xl font-semibold"
+                        className="text-xl font-semibold md:text-xl"
                         placeholder="Название теста"
                         {...field}
                         disabled={isSubmitting}

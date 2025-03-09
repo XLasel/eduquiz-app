@@ -8,7 +8,6 @@ import { Test } from '@/schemas/test';
 
 import {
   AUTH_SUCCESS_MESSAGES,
-  DEFAULT_PARAMS,
   ERROR_MESSAGES,
   TEST_SUCCESS_MESSAGES,
 } from '@/constants';
@@ -92,14 +91,13 @@ export const getAbsoluteUrl = (path: string) => {
  */
 export const generateCacheKey = (cacheKey: SearchParams): string => {
   const { sort, page, per, search } = cacheKey;
-  const params = [
-    page === undefined ? `page=${DEFAULT_PARAMS.page}` : `page=${page}`,
-    per === undefined ? `per=${DEFAULT_PARAMS.per}` : `per=${per}`,
-    search === undefined ? '' : `search=${search}`,
-    sort === undefined ? `sort=${DEFAULT_PARAMS.sort}` : `sort=${sort}`,
-  ]
-    .filter(Boolean)
-    .join('&');
+  const params = new URLSearchParams({
+    page: page.toString(),
+    per: per.toString(),
+    search,
+    sort,
+  }).toString();
+
   return `cache_key_${params}`;
 };
 

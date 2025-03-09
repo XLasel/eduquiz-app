@@ -172,8 +172,8 @@ export const StepForm = ({
       }
     },
     [
-      dispatch,
       test,
+      dispatch,
       userAnswers,
       saveAnswer,
       isLastStep,
