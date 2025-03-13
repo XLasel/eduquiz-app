@@ -1,94 +1,94 @@
 # EduQuiz
 
-Добро пожаловать в **EduQuiz** — платформу для создания и обмена увлекательными тестами, которая помогает расширять горизонты знаний в дружественной атмосфере.
+Welcome to **EduQuiz** — a platform for creating and sharing engaging quizzes that help expand knowledge in a friendly atmosphere.
 
-## О проекте
+## About the Project
 
-**EduQuiz** — это веб-приложение, разработанное с использованием современных технологий, таких как **React**, **Next.js** и **TypeScript**. Цель проекта — предоставить удобный инструмент для создания тестов, проверки знаний и обмена результатами в рамках стажировки.
+**EduQuiz** is a web application developed using modern technologies such as **React**, **Next.js**, and **TypeScript**. The goal of the project is to provide a convenient tool for creating quizzes, testing knowledge, and sharing results within the internship program.
 
-## ⚠️ Важно
+## ⚠️ Important
 
-**EduQuiz** интегрирован с приватным сервером, доступ к которому имеют только участники стажировки. Без специального ключа доступа и авторизации взаимодействие с серверной частью будет недоступно, а функциональность приложения будет ограничена.
+**EduQuiz** is integrated with a private server, accessible only to internship participants. Without a special access key and authorization, interaction with the server-side functionality will be unavailable, and the application's features will be limited.
 
-Если вы хотите узнать больше, пожалуйста, обратитесь к организаторам стажировки.
+If you want to learn more, please contact the internship organizers.
 
-## Основные возможности
+## Key Features
 
-- ✅ **Создание тестов** — добавляйте вопросы с разными типами ответов.
-- ✅ **Прохождение тестов** — участвуйте в тестах и отслеживайте свой прогресс.
-- ✅ **Обмен знаниями** — делитесь результатами с друзьями и коллегами.
-- ✅ **Интерактивный интерфейс** — поддержка анимаций и удобная навигация.
+- ✅ **Quiz Creation** — add questions with different answer types.
+- ✅ **Quiz Participation** — take quizzes and track your progress.
+- ✅ **Knowledge Sharing** — share results with friends and colleagues.
+- ✅ **Interactive Interface** — supports animations and user-friendly navigation.
 
-## Установка и запуск
+## Installation and Setup
 
-### Требования
+### Requirements
 
-- **Node.js** версии **18.17.0** или выше (рекомендуется LTS)
-- **pnpm** версии **8** или выше
+- **Node.js** version **18.17.0** or later (LTS recommended)
+- **pnpm** version **8** or later
 - **Git**
 
-### Установка
+### Installation
 
-1. Клонируйте репозиторий:
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/XLasel/eduquiz-app.git
    ```
 
-2. Перейдите в директорию проекта:
+2. Navigate to the project directory:
 
    ```bash
    cd eduquiz-app
    ```
 
-3. Установите зависимости:
+3. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-### Запуск в режиме разработки
+### Running in Development Mode
 
 ```bash
 pnpm dev
 ```
 
-После запуска приложение будет доступно по адресу: [http://localhost:3000](http://localhost:3000)
+After starting, the application will be available at: [http://localhost:3000](http://localhost:3000)
 
-⚠️ Обратите внимание: без доступа к приватному серверу функциональность приложения будет ограничена.
+⚠️ Note: Without access to the private server, the application's functionality will be limited.
 
-## Технологии
+## Technologies
 
-- ⚛ **React** — библиотека для создания пользовательских интерфейсов.
-- 🚀 **Next.js** — фреймворк для серверного рендеринга и статической генерации.
-- 🔷 **TypeScript** — язык программирования, расширяющий возможности JavaScript.
-- 🎬 **Framer Motion** — библиотека для создания анимаций.
-- 🎨 **Tailwind CSS** — утилитарный CSS-фреймворк для стилизации.
+- ⚛ **React** — a library for building user interfaces.
+- 🚀 **Next.js** — a framework for server-side rendering and static generation.
+- 🔷 **TypeScript** — a programming language that extends JavaScript capabilities.
+- 🎬 **Framer Motion** — a library for animations.
+- 🎨 **Tailwind CSS** — a utility-first CSS framework for styling.
 
-## 🤝 Вклад в проект
+## 🤝 Contributing
 
-Мы приветствуем вклад сообщества! Чтобы внести изменения:
+We welcome community contributions! To make changes:
 
-1. **Форкните** репозиторий.
-2. **Создайте новую ветку**:
+1. **Fork** the repository.
+2. **Create a new branch**:
    ```bash
    git checkout -b feature/YourFeature
    ```
-3. **Внесите изменения и закоммитьте их**:
+3. **Make changes and commit them**:
    ```bash
-   git commit -m "%Тип действия% %место изменения%: %краткое описание%"
+   git commit -m "%Action Type% %Change Location%: %Short Description%"
    ```
-4. **Запушьте изменения**:
+4. **Push your changes**:
    ```bash
    git push origin feature/YourFeature
    ```
-5. **Создайте Pull Request** через GitHub.
+5. **Create a Pull Request** via GitHub.
 
-## 📄 Лицензия
+## 📄 License
 
-Этот проект лицензирован под **MIT License**. Подробнее см. в файле [LICENSE](LICENSE).
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-## 📬 Контакты
+## 📬 Contact
 
-Если у вас есть вопросы или предложения, свяжитесь с нами:
+If you have any questions or suggestions, contact us at:
 📧 [roliv.ka@yandex.ru](mailto:roliv.ka@yandex.ru)

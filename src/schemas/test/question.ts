@@ -22,7 +22,7 @@ export const questionFormSchema = z
     const { question_type, answers, answer } = data;
 
     if (question_type !== 'number') {
-      // Минимальное количество ответов
+      // Minimum number of answers
       if (answers.length < 2) {
         ctx.addIssue({
           code: 'custom',
@@ -31,7 +31,7 @@ export const questionFormSchema = z
         });
       }
 
-      // Проверка на пустые ответы
+      // Check for empty answers
       answers.forEach((answer, index) => {
         if (answer.text.trim() === '') {
           ctx.addIssue({
@@ -42,7 +42,7 @@ export const questionFormSchema = z
         }
       });
 
-      // Проверка правильных ответов
+      // Check for the presence of an answer for the numeric type
       const correctAnswers = answers.filter((a) => a.is_right).length;
       if (question_type === 'single' && correctAnswers !== 1) {
         ctx.addIssue({
@@ -60,7 +60,7 @@ export const questionFormSchema = z
         });
       }
     } else {
-      // Проверка наличия ответа для числового типа
+      // Check for the presence of an answer for the numeric type
       if (answer === null) {
         ctx.addIssue({
           code: 'custom',

@@ -22,14 +22,14 @@ const numberAnswerSchema = baseAnswerSchema.extend({
   numericAnswer: z.number().min(0, 'Введите неотрицательное число'),
 });
 
-// Объединенная схема с дискриминантом по полю type
+// Combined schema with a discriminator by the type field
 export const currentUserAnswerSchema = z.discriminatedUnion('type', [
   singleAnswerSchema,
   multipleAnswerSchema,
   numberAnswerSchema,
 ]);
 
-// Типы на основе схем
+// Types based on schemas
 export type SingleAnswerValue = z.infer<typeof singleAnswerSchema>;
 export type MultipleAnswerValue = z.infer<typeof multipleAnswerSchema>;
 export type NumberAnswerValue = z.infer<typeof numberAnswerSchema>;

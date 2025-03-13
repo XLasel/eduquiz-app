@@ -22,11 +22,16 @@ export const signUpFormSchema = z
       ),
     password: z.string().min(6, 'Пароль должен содержать не менее 6 символов'),
     password_confirmation: z.string().min(1, 'Пожалуйста, подтвердите пароль'),
-    is_admin: z.boolean().transform((val) => val ?? false),
+    is_admin: z.boolean(),
+    admin_code: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: 'Пароли не совпадают',
     path: ['password_confirmation'],
+  })
+  .refine((data) => (data.is_admin ? !!data.admin_code?.trim() : true), {
+    message: 'Введите код доступа',
+    path: ['admin_code'],
   });
 
 export const userSchema = z.object({
