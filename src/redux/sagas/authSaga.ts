@@ -1,6 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { put, takeLatest } from 'redux-saga/effects';
 
+import { formatErrors } from '@/lib/utils';
 import { authApi } from '@/services/instance';
 
 import { userSchema } from '@/schemas/auth';
@@ -43,16 +44,11 @@ const authOperations = {
       setPending,
       errorCallback: function* (error) {
         if (error.status === 400) {
-          const errorMessages = Object.entries(
-            error.data as Record<string, string[]>
-          )
-            .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
-            .join(', ');
           yield put(
             setError({
               code: 400,
               entity: AUTH_ENTITY.USER,
-              message: errorMessages,
+              message: formatErrors(error.data as Record<string, string[]>),
             })
           );
         } else {

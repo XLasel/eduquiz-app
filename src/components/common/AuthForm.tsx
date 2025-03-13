@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import {
   ControllerFieldState,
   ControllerRenderProps,
@@ -9,11 +9,11 @@ import {
   Path,
   SubmitHandler,
   useForm,
-  UseFormStateReturn,
+  UseFormReturn,
 } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
 
 import { Button } from '@/components/shadcnUi/button';
@@ -29,6 +29,8 @@ import {
   FormMessage,
 } from '@/components/shadcnUi/form';
 
+import { PasswordField } from './PasswordField';
+
 export type FieldConfig<T extends FieldValues> = {
   name: Path<T>;
   label: string;
@@ -38,51 +40,76 @@ export type FieldConfig<T extends FieldValues> = {
   render?: ({
     field,
     fieldState,
-    formState,
+    form,
+    label,
+    placeholder,
+    description,
   }: {
     field: ControllerRenderProps<T, Path<T>>;
     fieldState: ControllerFieldState;
-    formState: UseFormStateReturn<T>;
+    form: UseFormReturn<T>;
+    label: string;
+    placeholder?: string;
+    description?: string;
   }) => ReactElement;
 };
 
-const PasswordField = <T extends FieldValues>({
-  field,
-  label,
-  placeholder,
-}: {
-  field: ControllerRenderProps<T, Path<T>>;
-  label: string;
-  placeholder?: string;
-}) => {
-  const [showPassword, setShowPassword] = useState(false);
-
-  return (
-    <FormItem>
-      <FormLabel>{label}</FormLabel>
+const fieldRenderers: {
+  [key in 'text' | 'password' | 'checkbox']: <T extends FieldValues>(props: {
+    field: ControllerRenderProps<T, Path<T>>;
+    f: FieldConfig<T>;
+  }) => ReactElement;
+} = {
+  checkbox: <T extends FieldValues>({
+    field,
+    f,
+  }: {
+    field: ControllerRenderProps<T, Path<T>>;
+    f: FieldConfig<T>;
+  }) => (
+    <FormItem className="flex flex-row items-start gap-2 space-y-0">
       <FormControl>
-        <div className="relative">
-          <FormInput
-            type={showPassword ? 'text' : 'password'}
-            placeholder={placeholder}
-            {...field}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-          >
-            {showPassword ? (
-              <EyeOff className="h-4 w-4 text-muted-foreground" />
-            ) : (
-              <Eye className="h-4 w-4 text-muted-foreground" />
-            )}
-          </button>
-        </div>
+        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+      </FormControl>
+      <div className="space-y-1 leading-none">
+        <FormLabel className="cursor-pointer">{f.label}</FormLabel>
+        {f.description && (
+          <FormDescription className="leading-tight">
+            {f.description}
+          </FormDescription>
+        )}
+      </div>
+    </FormItem>
+  ),
+  password: <T extends FieldValues>({
+    field,
+    f,
+  }: {
+    field: ControllerRenderProps<T, Path<T>>;
+    f: FieldConfig<T>;
+  }) => (
+    <PasswordField
+      field={field}
+      label={f.label}
+      placeholder={f.placeholder}
+      description={f.description}
+    />
+  ),
+  text: <T extends FieldValues>({
+    field,
+    f,
+  }: {
+    field: ControllerRenderProps<T, Path<T>>;
+    f: FieldConfig<T>;
+  }) => (
+    <FormItem>
+      <FormLabel>{f.label}</FormLabel>
+      <FormControl>
+        <FormInput type={f.type} placeholder={f.placeholder} {...field} />
       </FormControl>
       <FormMessage />
     </FormItem>
-  );
+  ),
 };
 
 interface AuthFormProps<T extends FieldValues, TData> {
@@ -111,59 +138,44 @@ export const AuthForm = <T extends FieldValues, TData>({
 
   const { control, handleSubmit } = form;
 
-  const renderField = (f: FieldConfig<T>) => {
+  const getFieldRenderer = (f: FieldConfig<T>) => {
     if (f.render) {
-      return f.render;
+      const render = f.render;
+      return ({
+        field,
+        fieldState,
+        form,
+      }: {
+        field: ControllerRenderProps<T, Path<T>>;
+        fieldState: ControllerFieldState;
+        form: UseFormReturn<T>;
+      }) =>
+        render({
+          field,
+          fieldState,
+          form,
+          label: f.label,
+          placeholder: f.placeholder,
+          description: f.description,
+        });
     }
 
-    if (f.type === 'checkbox') {
-      return ({ field }: { field: ControllerRenderProps<T, Path<T>> }) => (
-        <FormItem className="flex flex-row items-start gap-2 space-y-0 px-3 py-2">
-          <FormControl>
-            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-          </FormControl>
-          <div className="space-y-1 leading-none">
-            <FormLabel className="cursor-pointer">{f.label}</FormLabel>
-            {f.description && (
-              <FormDescription className="leading-tight">
-                {f.description}
-              </FormDescription>
-            )}
-          </div>
-        </FormItem>
-      );
-    }
-
-    if (f.type === 'password') {
-      return ({ field }: { field: ControllerRenderProps<T, Path<T>> }) => (
-        <PasswordField
-          field={field}
-          label={f.label}
-          placeholder={f.placeholder}
-        />
-      );
-    }
-
-    return ({ field }: { field: ControllerRenderProps<T, Path<T>> }) => (
-      <FormItem>
-        <FormLabel>{f.label}</FormLabel>
-        <FormControl>
-          <FormInput type={f.type} placeholder={f.placeholder} {...field} />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    );
+    return ({ field }: { field: ControllerRenderProps<T, Path<T>> }) =>
+      (fieldRenderers[f.type] ?? fieldRenderers.text)({ field, f });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex w-full flex-col gap-4"
+      >
         {fields.map((f) => (
           <FormField
             key={f.name as string}
             control={control}
             name={f.name as Path<T>}
-            render={renderField(f)}
+            render={(props) => getFieldRenderer(f)({ ...props, form })}
           />
         ))}
 
@@ -183,5 +195,3 @@ export const AuthForm = <T extends FieldValues, TData>({
     </Form>
   );
 };
-
-AuthForm.displayName = 'AuthForm';
