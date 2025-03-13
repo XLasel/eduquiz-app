@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { AnimatePresence, motion } from 'framer-motion';
+
 import { signUpRequest } from '@/redux/actions/authActions';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectIsAuthLoading } from '@/redux/selectors/authSelectors';
@@ -10,6 +12,7 @@ import { signUpFormSchema, SignUpValues } from '@/schemas/auth';
 import { SignUpPayload } from '@/types/auth';
 
 import { AuthForm, FieldConfig } from '@/components/common';
+import { PasswordField } from '@/components/common/PasswordField';
 
 import { APP_ROUTES } from '@/constants';
 import { useHandleAuthStatus, useIsClient } from '@/hooks';
@@ -41,6 +44,35 @@ const REGISTER_FORM_FIELDS: FieldConfig<SignUpValues>[] = [
     description:
       'Администратор обладает правами для создания и управления тестами',
   },
+  {
+    name: 'admin_code',
+    label: 'Код Администратора',
+    type: 'password',
+    placeholder: 'Введите код доступа',
+    description: 'Код необходим для регистрации как Администратор',
+    render: ({ field, label, placeholder, description, form }) => {
+      const { watch } = form;
+      const isAdmin = watch('is_admin');
+
+      return (
+        <AnimatePresence mode="popLayout">
+          {isAdmin && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <PasswordField
+                className="px-1"
+                {...{ field, label, placeholder, description }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      );
+    },
+  },
 ];
 
 export const RegisterForm = () => {
@@ -62,6 +94,7 @@ export const RegisterForm = () => {
         password: '',
         password_confirmation: '',
         is_admin: false,
+        admin_code: '',
       }}
       fields={REGISTER_FORM_FIELDS}
       loading={isClient && isLoading}

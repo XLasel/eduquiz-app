@@ -13,14 +13,14 @@ import {
 } from '@/constants';
 
 /**
- * Объединяет CSS классы с помощью tailwind-merge и clsx
+ * Merges CSS classes using tailwind-merge and clsx
  */
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
 
 /**
- * Получает первые буквы из имени пользователя для аватара
+ * Gets the first letters from the user's name for an avatar
  */
 export const getUsernameLetters = (displaName: string) => {
   const [a, b] = displaName.split('@')[0].split(/\.|\s|-|_/);
@@ -33,7 +33,7 @@ export const getUsernameLetters = (displaName: string) => {
 };
 
 /**
- * Находит индексы элементов для обмена при изменении порядка
+ * Finds the indexes of elements to swap when changing order
  */
 export const getFieldIndexesToSwap = (
   originalOrder: string[],
@@ -57,7 +57,7 @@ export const getFieldIndexesToSwap = (
 };
 
 /**
- * Обрабатывает изменение порядка элементов
+ * Handles element reordering
  */
 export const onReorder = (
   newOrder: string[],
@@ -73,21 +73,21 @@ export const onReorder = (
 };
 
 /**
- * Извлекает ID сессии из заголовка cookie
+ * Extracts the session ID from the cookie header
  */
 export const extractSessionId = (setCookieHeader: string): string => {
   return setCookieHeader.split('; ')[0].split('=')[1];
 };
 
 /**
- * Получает абсолютный URL для указанного пути
+ * Gets the absolute URL for the specified path
  */
 export const getAbsoluteUrl = (path: string) => {
   return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
 };
 
 /**
- * Генерирует ключ кэша на основе параметров поиска
+ * Generates a cache key based on search parameters
  */
 export const generateCacheKey = (cacheKey: SearchParams): string => {
   const { sort, page, per, search } = cacheKey;
@@ -102,7 +102,7 @@ export const generateCacheKey = (cacheKey: SearchParams): string => {
 };
 
 /**
- * Сравнивает два ключа кэша
+ * Compares two cache keys
  */
 export const compareCacheKeys = (a: string, b: string) => {
   const aParts = a.split('_').slice(1);
@@ -111,7 +111,7 @@ export const compareCacheKeys = (a: string, b: string) => {
 };
 
 /**
- * Вычисляет оценку на основе ответов пользователя
+ * Calculates the score based on user answers
  */
 export const calculateScore = (
   userAnswers: UserAnswer[],
@@ -155,7 +155,7 @@ export const calculateScore = (
 };
 
 /**
- * Получает сообщение об ошибке
+ * Retrieves an error message
  */
 export const getErrorMessage = (status?: number, entity?: string): string => {
   if (entity && status) {
@@ -172,7 +172,7 @@ export const getErrorMessage = (status?: number, entity?: string): string => {
 };
 
 /**
- * Получает сообщение об успешном выполнении операции с тестом
+ * Retrieves a success message for a test operation
  */
 export const getTestSuccessMessage = (
   entity?: string,
@@ -184,7 +184,7 @@ export const getTestSuccessMessage = (
 };
 
 /**
- * Получает сообщение об успешной авторизации
+ * Retrieves a success message for authentication
  */
 export const getAuthSuccessMessage = (
   key?: keyof typeof AUTH_SUCCESS_MESSAGES
@@ -193,7 +193,27 @@ export const getAuthSuccessMessage = (
 };
 
 /**
- * Делает выбранные свойства типа обязательными
+ * Makes selected properties of a type required
  */
 export type MakePropertyRequired<T, K extends keyof T> = Pick<Required<T>, K> &
   Omit<T, K>;
+
+/**
+ * Capitalizes the first letter of a string
+ */
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+
+/**
+ * Formats error messages
+ */
+export const formatErrors = (errors: Record<string, string[]>) => {
+  return (
+    Object.entries(errors)
+      .map(
+        ([field, messages]) =>
+          `${capitalize(field.replace(/_/g, ' '))}: ${messages.join(', ')}`
+      )
+      .join('. ') + '.'
+  );
+};

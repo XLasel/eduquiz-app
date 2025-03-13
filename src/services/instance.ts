@@ -37,18 +37,7 @@ apiProxy.interceptors.response.use(
 export const authApi = {
   signIn: async ({ username, password }: SignInPayload) =>
     await apiProxy.post('/signin', { username, password }),
-  signUp: async ({
-    username,
-    password,
-    password_confirmation,
-    is_admin,
-  }: SignUpPayload) =>
-    await apiProxy.post('/signup', {
-      username,
-      password,
-      password_confirmation,
-      is_admin,
-    }),
+  signUp: async (data: SignUpPayload) => await apiProxy.post('/signup', data),
   fetchUser: async () => await apiProxy.get('/users/current'),
   logout: async () => await apiProxy.delete('/logout'),
 };

@@ -20,19 +20,19 @@ import {
   testUpdatedServerSchema,
 } from '@/schemas/test';
 
-// Список тестов
+// Tests list
 export type StartTestListFetchPayload = SearchParams;
 export type CompleteTestListFetchData = z.infer<typeof testsListServerSchema>;
 
-// Конкретный тест
+// Specific test
 export type StartTestFetchPayload = Test['id'];
 export type CompleteTestFetchData = z.infer<typeof testByIdServerSchema>;
 
-// Создание теста
+// Create test
 export type StartTestCreationPayload = TestFormValue;
 export type CompleteTestCreationData = z.infer<typeof testCreatedServerSchema>;
 
-// Обновление теста
+// Update test
 export type StartTestUpdatePayload = {
   updatedTest: TestFormValue;
   originalTest: Test;
@@ -42,11 +42,11 @@ export type CompleteTestTitleUpdateData = z.infer<
   typeof testUpdatedServerSchema
 >;
 
-// Удаление теста
+// Delete test
 export type StartTestDeletionPayload = Test['id'];
 export type CompleteTestDeletionData = StartTestDeletionPayload;
 
-// Вопрос
+// Question
 export type StartQuestionCreationPayload = {
   testId: Test['id'];
   question: QuestionFormValue;
@@ -66,7 +66,7 @@ export type CompleteQuestionUpdateData = z.infer<
 export type StartQuestionDeletionPayload = Question['id'];
 export type CompleteQuestionDeletionData = StartQuestionDeletionPayload;
 
-// Ответ
+// Answer
 export type StartAnswerCreationPayload = {
   questionId: Question['id'];
   answer: AnswerFormValue;
