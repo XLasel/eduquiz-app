@@ -11,4 +11,5 @@ export * from './Pagination';
 export * from './Pagination';
 export * from './Profile';
 export * from './ProfileAvatar';
+export * from './QuestionTypeBadge';
 export * from './Search';

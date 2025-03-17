@@ -61,7 +61,7 @@ export const ResultDisplay = ({
       };
     return {
       icon: <AlertCircle className="h-12 w-12 text-result-poor" />,
-      message: 'Попробуйте еще раз. Практика ведет к совершенству!',
+      message: 'Попробуйте еще раз. Практика ведет к\u00A0совершенству!',
       class: 'text-result-poor',
     };
   };

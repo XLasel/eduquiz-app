@@ -30,7 +30,7 @@ const Error = ({ error, reset }: { error: Error; reset: () => void }) => {
             Что-то пошло не так!
           </h2>
           <div className="flex max-w-xl flex-col items-center justify-center gap-4">
-            <p className="text-center text-lg text-muted-foreground">
+            <p className="break-all text-center text-lg text-muted-foreground md:break-normal">
               {error?.message}
             </p>
             <Button
