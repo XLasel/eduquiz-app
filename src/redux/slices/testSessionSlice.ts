@@ -1,11 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { CurrentUserAnswerValue } from '@/schemas/sessionTest';
-
-export type UserAnswer = CurrentUserAnswerValue;
+import { UserAnswerData } from '@/types/session';
 
 export type TestSessionState = {
-  answers: Array<UserAnswer>;
+  answers: Array<UserAnswerData>;
   score: number | null;
 };
 
@@ -18,7 +16,7 @@ const testSessionSlice = createSlice({
   name: 'testSession',
   initialState,
   reducers: {
-    saveUserAnswer: (state, action: PayloadAction<UserAnswer>) => {
+    saveUserAnswer: (state, action: PayloadAction<UserAnswerData>) => {
       const { questionId, selectedAnswerId, numericAnswer } = action.payload;
       const existingAnswer = state.answers.find(
         (a) => a.questionId === questionId

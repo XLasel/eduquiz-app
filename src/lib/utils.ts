@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import { UserAnswer } from '@/redux/slices/testSessionSlice';
+import { UserAnswerData } from '@/types/session';
 
 import { SearchParams } from '@/schemas/search';
 import { Test } from '@/schemas/test';
@@ -114,7 +114,7 @@ export const compareCacheKeys = (a: string, b: string) => {
  * Calculates the score based on user answers
  */
 export const calculateScore = (
-  userAnswers: UserAnswer[],
+  userAnswers: UserAnswerData[],
   test: Test
 ): number => {
   return test.questions.reduce((totalScore, question) => {
